@@ -4,5 +4,5 @@ namespace TodoApp.Pages;
 
 public class IndexModel : AbpPageModel
 {
-    
+
 }

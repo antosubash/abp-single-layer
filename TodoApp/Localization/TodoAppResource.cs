@@ -5,5 +5,5 @@ namespace TodoApp.Localization;
 [LocalizationResourceName("TodoApp")]
 public class TodoAppResource
 {
-    
+
 }
