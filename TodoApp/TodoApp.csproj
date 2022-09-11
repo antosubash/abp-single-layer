@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <UserSecretsId>8da3b52d-6177-4c61-97ac-2d1ffe0be165</UserSecretsId>
-    <Version>1.0.3</Version>
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
   <ItemGroup>
