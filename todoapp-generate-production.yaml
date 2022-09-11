@@ -1,0 +1,91 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: todoapp
+  labels:
+    app.kubernetes.io/name: 'todoapp'
+    app.kubernetes.io/part-of: 'todoapp'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: todoapp
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: 'todoapp'
+        app.kubernetes.io/part-of: 'todoapp'
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: todoapp
+        image: registry.kdev.antosubash.com/todoapp:1.0.2
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: "0.5"
+            memory: 1Gi
+        env:
+        - name: ASPNETCORE_URLS
+          value: 'http://*'
+        - name: PORT
+          value: '80'
+        - name: CONNECTIONSTRINGS__Default
+          value: 'Host=postgres.default.svc.cluster.local;Port=5432;Database=TodoApp;User ID=postgres;Password=my_postgres_password;'
+        - name: ASPNETCORE_ENVIRONMENT
+          value: 'Production'
+        - name: App__SelfUrl
+          value: 'https://todoapp.kdev.antosubash.com'
+        ports:
+        - containerPort: 80
+...
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: todoapp
+  labels:
+    app.kubernetes.io/name: 'todoapp'
+    app.kubernetes.io/part-of: 'todoapp'
+spec:
+  selector:
+    app.kubernetes.io/name: todoapp
+  type: ClusterIP
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+...
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: http-ingress-todoapp
+  annotations:
+    cert-manager.io/cluster-issuer: "lets-encrypt"
+    kubernetes.io/ingress.class: "public"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  labels:
+    app.kubernetes.io/part-of: 'todoapp'
+spec:
+  tls:
+  - hosts:
+    - todoapp.kdev.antosubash.com
+    secretName: todoapp-tls
+  rules:
+  - host: todoapp.kdev.antosubash.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: todoapp
+            port:
+              number: 80
+        pathType: Prefix
+        path: /
+...

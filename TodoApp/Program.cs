@@ -42,13 +42,7 @@ public class Program
             await builder.AddApplicationAsync<TodoAppModule>();
             var app = builder.Build();
             await app.InitializeApplicationAsync();
-
-            if (IsMigrateDatabase(args))
-            {
-                await app.Services.GetRequiredService<TodoAppDbMigrationService>().MigrateAsync();
-                return 0;
-            }
-
+            await app.Services.GetRequiredService<TodoAppDbMigrationService>().MigrateAsync();
             Log.Information("Starting TodoApp.");
             await app.RunAsync();
             return 0;

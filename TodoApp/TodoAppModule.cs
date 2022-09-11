@@ -48,6 +48,8 @@ using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.Validation.Localization;
 using Volo.Abp.VirtualFileSystem;
+using Autofac.Core;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace TodoApp;
 
@@ -135,6 +137,12 @@ public class TodoAppModule : AbpModule
         {
             context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
         }
+
+        context.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders =
+                ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        });
 
         ConfigureAuthentication(context);
         ConfigureMultiTenancy();
@@ -315,7 +323,7 @@ public class TodoAppModule : AbpModule
         {
             app.UseErrorPage();
         }
-
+        app.UseForwardedHeaders();
         app.UseCorrelationId();
         app.UseStaticFiles();
         app.UseRouting();

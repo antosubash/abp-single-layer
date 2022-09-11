@@ -1,0 +1,5 @@
+name: todoapp
+registry: registry.kdev.antosubash.com
+services:
+- name: todoapp
+  project: TodoApp/TodoApp.csproj
