@@ -141,7 +141,7 @@ public class TodoAppModule : AbpModule
         context.Services.Configure<ForwardedHeadersOptions>(options =>
         {
             options.ForwardedHeaders =
-                ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                ForwardedHeaders.XForwardedProto;
         });
 
         ConfigureAuthentication(context);
